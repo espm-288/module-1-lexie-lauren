@@ -1,65 +1,65 @@
-# Module 1: Tabular Data
+# Module the First: Of Tables Most Tabular
 
-## Project Overview
+## A Tale of Data Most Grand
 
-This module explores high-performance workflows for working with large tabular datasets using `duckdbfs`. The focus is on handling datasets that are larger than available RAM by leveraging DuckDB's streaming and remote file access capabilities.
+Hark! This module doth explore the noble art of high-performance workflows for labouring with vast tabular datasets, employing the mighty `duckdbfs`. Our quest doth focus upon handling datasets that surpasseth the bounds of available RAM, by means of DuckDB's streaming magicks and remote file conjurations.
 
-## Case Study: Global Supply Chains (EXIOBASE 3.8.1)
+## A Case Most Studious: Of Global Supply Chains (EXIOBASE 3.8.1)
 
-This project analyzes [EXIOBASE 3.8.1](https://source.coop/youssef-harby/exiobase-3), a global Multi-Regional Input-Output (MRIO) database that tracks:
-- Economic transactions between sectors and regions
-- Environmental impacts (emissions, resource use, etc.)
+This undertaking doth analyze [EXIOBASE 3.8.1](https://source.coop/youssef-harby/exiobase-3), a global Multi-Regional Input-Output (MRIO) repository most wondrous, which tracketh:
+- Economic transactions betwixt sectors and realms
+- Environmental burdens (emissions, resource consumption, and such tribulations)
 
-### Dataset Details
-- **Coverage**: 44 countries + 5 rest-of-world regions
-- **Timeframe**: 1995–2022
-- **Content**: Economic transactions (Z matrix), final demand (Y matrix), and environmental stressors (F matrix)
-- **Format**: Cloud-optimized Parquet, partitioned by year and matrix type
-- **Storage**: Hosted on Source Cooperative (S3)
+### Details of Yon Dataset
+- **Coverage**: Two score and four countries, plus five rest-of-world dominions
+- **Timeframe**: From the year of our Lord 1995 unto 2022
+- **Content**: Economic transactions (the Z matrix), final demand (the Y matrix), and environmental stressors (the F matrix)
+- **Format**: Cloud-optimized Parquet, partitioned by year and matrix most methodical
+- **Storage**: Hosted upon Source Cooperative (that which men calleth S3)
 
-## Getting Started
+## To Begin Thy Journey
 
-### Prerequisites
-- R (version 4.0 or higher recommended)
-- Required R packages:
+### Prerequisites Most Necessary
+- R (version 4.0 or higher, as it pleaseth thee)
+- Required R packages of great import:
   - `duckdbfs`
   - `dplyr`
 
-### Installation
+### Installation of Thy Tools
 
-Install the required packages:
+Install ye the required packages thus:
 ```r
 install.packages("dplyr")
 install.packages("duckdbfs")
 ```
 
-## Usage
+## Upon Usage
 
-Open [tabular-data.qmd](tabular-data.qmd) in RStudio or another Quarto-compatible editor and follow the exercises:
+Prithee, open [tabular-data.qmd](tabular-data.qmd) within RStudio or another editor most compatible with Quarto, and followeth these exercises:
 
-1. **Exercise 1**: Connect to remote data without downloading
-2. **Exercise 2**: Efficiently filter large datasets before loading into R
-3. **Additional tasks**: Analyze CO2 emissions by sector
+1. **Exercise the First**: Connecteth to remote data without downloading, as if by sorcery
+2. **Exercise the Second**: Filter efficiently yon large datasets ere loading them into R
+3. **Additional labours**: Analyze CO2 emissions by sector most diligently
 
-## Key Learning Objectives
+## Objectives of Learning Most Key
 
-- Work with datasets larger than RAM
-- Connect to and query remote cloud-hosted data (S3)
-- Apply efficient filtering strategies before data collection
-- Leverage DuckDB's streaming capabilities through R
-- Analyze environmental and economic data from MRIO databases
+- To work with datasets larger than RAM, as Hamlet's ambition
+- To connect unto and query remote cloud-hosted data (S3), as distant as the stars
+- To apply efficient filtering stratagems before data collection
+- To leverage DuckDB's streaming capabilities through R, swift as Mercury
+- To analyze environmental and economic data from MRIO repositories most thoroughly
 
-## Files
+## Files of Import
 
-- `tabular-data.qmd`: Main Quarto document with exercises and analysis
-- `README.md`: Project documentation (this file)
+- `tabular-data.qmd`: The principal Quarto document, wherein lie exercises and analysis
+- `README.md`: Documentation of this project (this very parchment thou readest)
 
-## Course Information
+## Information Regarding the Course
 
 **Course**: ESPM 288  
-**Module**: 1  
-**Topic**: Working with larger-than-RAM data using duckdbfs
+**Module**: The First  
+**Topic**: Working with data larger than RAM, using the noble duckdbfs
 
-## License
+## License Most Fair
 
-This project is part of the ESPM 288 coursework.
+This project doth form part of the ESPM 288 coursework, and is bound thereby.
