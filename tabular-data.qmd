@@ -33,7 +33,6 @@ We can open the entire dataset without downloading it using `open_dataset()`. Th
 
 ```{r}
 # Remote S3 path to EXIOBASE 3 (Source Cooperative)
-
 duckdbfs::duckdb_secrets(
     key = "",
     secret = "",
@@ -60,7 +59,9 @@ exio |>
     collect()
 ```
 
-> **Task**: Construct a query to find the top 5 sectors in the US by CO2 emissions in 2022. Remember to check the column names in `exio` to find the appropriate emissions flow.
+## Exercise 3: CO2 Emissions Analysis
+
+Read CO2 emissions data from the F_satellite matrix and analyze top sectors.
 
 ```{r}
 # Read CO2 production data from F_satellite matrix
@@ -75,4 +76,88 @@ co2_data <- exio |>
 
 # View the CO2 data
 co2_data
+```
+
+```{r}
+# Find top 5 sectors in the US by CO2 emissions in 2022
+top_co2_sectors <- co2_data |>
+    filter(region == "US") |>
+    group_by(sector) |>
+    summarise(total_co2 = sum(value, na.rm = TRUE)) |>
+    arrange(desc(total_co2)) |>
+    slice_head(n = 5)
+
+top_co2_sectors
+```
+
+## Exercise 4: Time Series of Top CO2 Emitting Countries
+
+Visualize CO2 emissions over time for the top 5 emitting countries.
+
+```{r}
+library(ggplot2)
+
+# First, get all CO2 data across all years
+co2_all_years <- exio |>
+    filter(
+        matrix == "F_satellite",
+        stressor %like% "%CO2%"
+    ) |>
+    collect()
+
+# Identify top 5 CO2 emitting countries in 2022
+top_5_countries <- co2_all_years |>
+    filter(year == 2022) |>
+    group_by(region) |>
+    summarise(total_co2 = sum(value, na.rm = TRUE)) |>
+    arrange(desc(total_co2)) |>
+    slice_head(n = 5) |>
+    pull(region)
+
+# Filter data for top 5 countries across all years
+co2_time_series <- co2_all_years |>
+    filter(region %in% top_5_countries) |>
+    group_by(year, region) |>
+    summarise(total_co2 = sum(value, na.rm = TRUE), .groups = "drop")
+
+# Create the plot
+ggplot(co2_time_series, aes(x = year, y = total_co2, color = region)) +
+    geom_line(linewidth = 1) +
+    geom_point() +
+    labs(
+        title = "CO2 Emissions Over Time: Top 5 Emitting Countries",
+        x = "Year",
+        y = "Total CO2 Emissions",
+        color = "Country"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+```
+
+## Exercise 5: Top CO2 Emitting Industries Globally
+
+Identify the top 5 industries/sectors that emit the most CO2 globally in 2022.
+
+```{r}
+# Find top 5 industries globally by CO2 emissions in 2022
+top_co2_industries <- co2_data |>
+    group_by(sector) |>
+    summarise(total_co2 = sum(value, na.rm = TRUE)) |>
+    arrange(desc(total_co2)) |>
+    slice_head(n = 5)
+
+top_co2_industries
+```
+
+```{r}
+# Visualize top 5 emitting industries
+ggplot(top_co2_industries, aes(x = reorder(sector, total_co2), y = total_co2)) +
+    geom_col(fill = "steelblue") +
+    coord_flip() +
+    labs(
+        title = "Top 5 CO2 Emitting Industries Globally (2022)",
+        x = "Sector",
+        y = "Total CO2 Emissions"
+    ) +
+    theme_minimal()
 ```
