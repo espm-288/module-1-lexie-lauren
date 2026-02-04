@@ -75,4 +75,85 @@ co2_data <- exio |>
 
 # View the CO2 data
 co2_data
+glimpse(co2_data)
+
+# Find unique CO2 stressors
+unique_stressors <- co2_data |>
+    distinct(stressor) |>
+    arrange(stressor)
+
+unique_stressors
+```
+
+## Exercise 3: Time Series Analysis of Top CO2 Emitters
+
+Now let's create a visualization showing CO2 emissions over time for the top 5 emitting countries.
+
+```{r}
+library(ggplot2)
+
+# Get CO2 data, identify top 5 emitters, and create time series
+exio |>
+    filter(matrix == "F_satellite", stressor %like% "%CO2%") |>
+    collect() |>
+    group_by(region) |>
+    mutate(region_total = sum(value, na.rm = TRUE)) |>
+    ungroup() |>
+    filter(dense_rank(desc(region_total)) <= 5) |>
+    group_by(year, region) |>
+    summarize(total_co2 = sum(value, na.rm = TRUE), .groups = "drop") |>
+    ggplot(aes(x = year, y = total_co2, color = region)) +
+    geom_line(linewidth = 1.2) +
+    geom_point(linewidth = 2) +
+    labs(
+        title = "CO2 Emissions Over Time: Top 5 Emitting Countries",
+        x = "Year",
+        y = "Total CO2 Emissions",
+        color = "Country/Region"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+```
+
+## Exercise 4: Top Countries Reducing CO2 Emissions
+
+Let's identify the countries that have achieved the greatest reduction in CO2 emissions from 1995 to 2022.
+
+```{r}
+# Calculate emission changes and identify top 5 reducers (individual countries only)
+exio |>
+    filter(matrix == "F_satellite", stressor %like% "%CO2%") |>
+    collect() |>
+    filter(!region %in% c("WE", "WA", "WF", "WL", "WM")) |>  # Exclude aggregated regions
+    group_by(year, region) |>
+    summarize(total_co2 = sum(value, na.rm = TRUE), .groups = "drop") |>
+    group_by(region) |>
+    filter(n() >= 2) |>  # Ensure at least 2 years of data
+    summarize(
+        first_year_emissions = total_co2[which.min(year)],
+        last_year_emissions = total_co2[which.max(year)],
+        change = last_year_emissions - first_year_emissions,
+        .groups = "drop"
+    ) |>
+    arrange(change) |>
+    head(5) |>
+    ggplot(aes(x = reorder(region, change), y = change, fill = region)) +
+    geom_col() +
+    geom_text(aes(label = round(change, 0)), hjust = 1.2, color = "white", size = 6) +
+    coord_flip() +
+    labs(
+        title = "Top 5 Countries with Greatest CO2 Emission Reductions",
+        subtitle = "Change from 1995 to 2022 (Individual Countries Only)",
+        x = "Country/Region",
+        y = "Change in CO2 Emissions",
+        fill = "Country/Region"
+    ) +
+    theme_minimal(base_size = 14) +
+    theme(
+        legend.position = "right",
+        plot.title = element_text(size = 16, face = "bold"),
+        plot.subtitle = element_text(size = 12),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 13)
+    )
 ```
