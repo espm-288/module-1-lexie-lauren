@@ -1,0 +1,136 @@
+```{r}
+library(duckdbfs)
+library(dplyr)
+
+```
+
+
+```{r}
+# Remote S3 path to EXIOBASE 3 (Source Cooperative)
+duckdbfs::duckdb_secrets(
+    key = "",
+    secret = "",
+    endpoint = "s3.amazonaws.com",
+    region = "us-west-2"
+)
+s3_url <- "s3://us-west-2.opendata.source.coop/youssef-harby/exiobase-3/4588235/parquet/**"
+
+# Open the dataset lazily
+exio <- open_dataset(s3_url)
+
+```
+
+```{r}
+co2 <- exio |>
+  filter(matrix == "F_satellite") |>
+  filter(grepl("CO2|carbon dioxide", stressor, ignore.case = TRUE))
+
+co2
+```
+
+```{r}
+top_co2_regions <- co2 |>
+    group_by(region) |>
+    summarise(total_co2 = sum(value, na.rm = TRUE)) |>
+    arrange(desc(total_co2)) |>
+    head(5) |>
+    collect()
+
+top_co2_regions
+```
+
+Filter the co2 data down to just these top countries, and plot their total emissions by year.
+
+```{r}
+library(ggplot2)
+
+# Get the list of top regions
+top_regions <- top_co2_regions$region
+
+# Filter co2 data to top regions and summarize by year
+co2_by_year <- co2 |>
+  filter(region %in% top_regions) |>
+  group_by(region, year) |>
+  summarise(total_co2 = sum(value, na.rm = TRUE), .groups = "drop") |>
+  collect()
+
+# Plot emissions by year for top countries
+ggplot(co2_by_year, aes(x = year, y = total_co2, color = region)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  labs(
+    title = "CO2 Emissions Over Time for Top 5 Regions",
+    x = "Year",
+    y = "Total CO2 Emissions",
+    color = "Region"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Identify the top 5 sectors in the US by CO2 emissions in 2022, and visualize their emissions over time.
+
+```{r}
+# Find top 5 sectors in US for 2022
+top_us_sectors_2022 <- co2 |>
+  filter(region == "US") |>
+  filter(year == 2022) |>
+  group_by(sector) |>
+  summarise(total_co2 = sum(value, na.rm = TRUE)) |>
+  arrange(desc(total_co2)) |>
+  head(5) |>
+  collect()
+
+top_us_sectors_2022
+```
+
+```{r}
+# Get the list of top sectors
+top_sectors <- top_us_sectors_2022$sector
+
+# Filter co2 data to US and top sectors, summarize by year
+us_sectors_by_year <- co2 |>
+  filter(region == "US") |>
+  filter(sector %in% top_sectors) |>
+  group_by(sector, year) |>
+  summarise(total_co2 = sum(value, na.rm = TRUE), .groups = "drop") |>
+  collect()
+
+# Plot emissions by year for top US sectors
+ggplot(us_sectors_by_year, aes(x = year, y = total_co2, color = sector)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  labs(
+    title = "CO2 Emissions Over Time for Top 5 US Sectors (by 2022 emissions)",
+    x = "Year",
+    y = "Total CO2 Emissions",
+    color = "Sector"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+identify and plot the monetary values of co2 emissions for the top 5 emitting countries over time.
+
+```{r}
+# Assume a monetary value per ton of CO2 (e.g., $50/ton)
+co2_value_per_ton <- 50
+
+# Calculate monetary values for top 5 regions over time
+co2_monetary_by_year <- co2_by_year |>
+  mutate(monetary_value = total_co2 * co2_value_per_ton)
+
+# Plot monetary values by year for top countries
+library(ggplot2)
+ggplot(co2_monetary_by_year, aes(x = year, y = monetary_value, color = region)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  labs(
+    title = "Monetary Value of CO2 Emissions for Top 5 Regions",
+    x = "Year",
+    y = "Monetary Value (USD)",
+    color = "Region"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
