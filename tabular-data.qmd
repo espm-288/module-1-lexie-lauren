@@ -242,3 +242,20 @@ ggplot(top_co2_industries, aes(x = reorder(sector, total_co2), y = total_co2)) +
     ) +
     theme_minimal()
 ```
+
+## Exercise 6: types of pollutants
+
+In the US, what are the top 5 sectors with highest emissions in 2022?
+
+```{r}
+# Find top 5 sectors with highest total emissions in the US in 2022
+top_us_sectors <- exio |>
+    filter(year == 2022, matrix == "F_satellite", region == "US") |>
+    collect() |>
+    group_by(sector) |>
+    summarise(total_emissions = sum(value, na.rm = TRUE), .groups = "drop") |>
+    arrange(desc(total_emissions)) |>
+    slice_head(n = 5)
+
+top_us_sectors
+```
