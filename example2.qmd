@@ -1,0 +1,81 @@
+---
+title: "Module 1: Tabular Data"
+subtitle: "Working with larger-than-RAM data using duckdbfs"
+author: "ESPM 288"
+format: html
+---
+
+```{r}
+library(duckdbfs)
+library(dplyr)
+library(ggplot2)
+
+```
+
+```{r}
+# Remote S3 path to EXIOBASE 3 (Source Cooperative)
+duckdbfs::duckdb_secrets(
+    key = "",
+    secret = "",
+    endpoint = "s3.amazonaws.com",
+    region = "us-west-2"
+)
+s3_url <- "s3://us-west-2.opendata.source.coop/youssef-harby/exiobase-3/4588235/parquet/**"
+
+# Open the dataset lazily
+exio <- open_dataset(s3_url)
+
+# View the schema (column names and types) without reading data
+glimpse(exio)
+```
+
+```{r}
+# Check what distinct table values exist in the database - exploration delete after
+exio |>
+  distinct(matrix) |>
+  collect()
+```
+
+
+```{r}
+co2 <- exio |>
+  filter(matrix == "F_satellite") |>
+  filter(grepl("CO2|carbon dioxide", stressor, ignore.case = TRUE))
+
+co2
+```
+
+identify which regions are the top 5 co2 emitters
+```{r}
+top_co2_emitters <- co2 |>
+  group_by(region) |>
+  summarise(total_co2 = sum(value, na.rm = TRUE)) |>
+  arrange(desc(total_co2)) |>
+  head(5) |>
+  collect()
+
+top_co2_emitters
+```
+
+filter the co2 data down to just these top countries and plot their total emissions by year
+```{r}
+# Get the top regions
+top_regions <- top_co2_emitters$region
+
+# Filter co2 data for top regions and summarize by region and year
+co2_by_year <- co2 |>
+  filter(region %in% top_regions) |>
+  group_by(region, year) |>
+  summarise(total_co2 = sum(value, na.rm = TRUE)) |>
+  collect()
+
+# Plot emissions over time
+ggplot(co2_by_year, aes(x = year, y = total_co2, color = region)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  labs(title = "CO2 Emissions Over Time for Top Emitting Regions",
+       x = "Year",
+       y = "Total CO2 Emissions",
+       color = "Region") +
+  theme_minimal()
+```
