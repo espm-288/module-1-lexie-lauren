@@ -9,7 +9,6 @@ format: html
 library(duckdbfs)
 library(dplyr)
 library(ggplot2)
-
 ```
 
 ```{r}
