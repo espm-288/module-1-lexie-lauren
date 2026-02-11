@@ -2,8 +2,38 @@
 title: "Module 1: Tabular Data"
 subtitle: "Working with larger-than-RAM data using duckdbfs"
 author: "ESPM 288"
-format: html
+format:
+  html:
+    embed-resources: true
+    css: custom-style.css
 ---
+
+```{css, echo=FALSE}
+body {
+  background-color: #FFB6C1 !important;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
+}
+
+h1, .title {
+  color: #FF1493 !important;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
+}
+
+h2 {
+  color: #FF69B4 !important;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
+}
+
+h3 {
+  color: #9370DB !important;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
+}
+
+.subtitle {
+  color: #FF6347 !important;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
+}
+```
 
 ## Introduction
 
