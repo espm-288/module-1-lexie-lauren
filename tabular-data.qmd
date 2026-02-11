@@ -7,6 +7,7 @@ format:
     embed-resources: true
     css: custom-style.css
     code-fold: true
+    df-print: paged
 ---
 
 ```{css, echo=FALSE}
