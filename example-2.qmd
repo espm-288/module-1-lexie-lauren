@@ -4,17 +4,30 @@ subtitle: "Working with larger than RAM data using duckdbfs"
 format:
   html:
     embed-resources: true
+    code-fold: true
+    code-tools: true
+    df-print: kable
 ---
 Explaining our analysis and so forth. 
 
 ```{r}
+#| include: false
 library(duckdbfs)
 library(dplyr)
+library(ggplot2)
+library(knitr)
 
+# Set default chunk options
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
 ```
 
 
 ```{r}
+#| output: false
 # Remote S3 path to EXIOBASE 3 (Source Cooperative)
 duckdbfs::duckdb_secrets(
     key = "",
@@ -26,15 +39,13 @@ s3_url <- "s3://us-west-2.opendata.source.coop/youssef-harby/exiobase-3/4588235/
 
 # Open the dataset lazily
 exio <- open_dataset(s3_url)
-
 ```
 
 ```{r}
+#| output: false
 co2 <- exio |>
   filter(matrix == "F_satellite") |>
   filter(grepl("CO2|carbon dioxide", stressor, ignore.case = TRUE))
-
-co2
 ```
 
 ```{r}
@@ -45,14 +56,12 @@ top_co2_regions <- co2 |>
     head(5) |>
     collect()
 
-top_co2_regions
+knitr::kable(top_co2_regions, format.args = list(big.mark = ","))
 ```
 
 Filter the co2 data down to just these top countries, and plot their total emissions by year.
 
 ```{r}
-library(ggplot2)
-
 # Get the list of top regions
 top_regions <- top_co2_regions$region
 
@@ -90,7 +99,7 @@ top_us_sectors_2022 <- co2 |>
   head(5) |>
   collect()
 
-top_us_sectors_2022
+knitr::kable(top_us_sectors_2022, format.args = list(big.mark = ","))
 ```
 
 ```{r}
@@ -132,4 +141,5 @@ all_sectors_by_year <- co2 |>
     summarise(total_co2 = sum(value, na.rm = TRUE), .groups="drop") |> 
     collect()
 
-all_sectors_by_year
+knitr::kable(all_sectors_by_year, format.args = list(big.mark = ","))
+```
