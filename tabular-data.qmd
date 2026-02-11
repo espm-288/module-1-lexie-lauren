@@ -6,6 +6,7 @@ format:
   html:
     embed-resources: true
     css: custom-style.css
+    code-fold: true
 ---
 
 ```{css, echo=FALSE}
@@ -33,6 +34,8 @@ h3 {
   color: #FF6347 !important;
   font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
 }
+
+install.packages("quarto")
 ```
 
 ## Introduction

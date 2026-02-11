@@ -2226,6 +2226,7 @@ font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
 color: #FF6347 !important;
 font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
 }
+install.packages("quarto")
 </style>
 </div>
 <section id="introduction" class="level2">
@@ -2240,8 +2241,11 @@ font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(duckdbfs)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: &#39;dplyr&#39;</code></pre>
@@ -2262,6 +2266,8 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 <h2 class="anchored" data-anchor-id="exercise-1-connecting-to-remote-data">Exercise 1: connecting to remote data</h2>
 <p>We can open the entire dataset without downloading it using <code>open_dataset()</code>. The data is hosted on Source Cooperative. The <code>**</code> pattern allows recursive scanning of the partitioned parquet files.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remote S3 path to EXIOBASE 3 (Source Cooperative)</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>duckdbfs<span class="sc">::</span><span class="fu">duckdb_secrets</span>(</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">key =</span> <span class="st">&quot;&quot;</span>,</span>
@@ -2269,9 +2275,12 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">endpoint =</span> <span class="st">&quot;s3.amazonaws.com&quot;</span>,</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">region =</span> <span class="st">&quot;us-west-2&quot;</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>s3_url <span class="ot">&lt;-</span> <span class="st">&quot;s3://us-west-2.opendata.source.coop/youssef-harby/exiobase-3/4588235/parquet/**&quot;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Open the dataset lazily</span></span>
@@ -2279,6 +2288,7 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># View the schema (column names and types) without reading data</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(exio)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: ??
 Columns: 8
@@ -2298,10 +2308,13 @@ $ matrix   &lt;chr&gt; &quot;F_impacts&quot;, &quot;F_impacts&quot;, &quot;F_imp
 <h2 class="anchored" data-anchor-id="exercise-2-efficient-filtering">Exercise 2: Efficient Filtering</h2>
 <p>The dataset is large. We should filter <em>before</em> collecting any data into R.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>exio <span class="sc">|&gt;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2022</span>, region <span class="sc">==</span> <span class="st">&quot;US&quot;</span>) <span class="sc">|&gt;</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>() <span class="sc">|&gt;</span> <span class="co"># view the first 6 rows</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 8
   stressor    region sector                      value unit   year format matrix
@@ -2319,6 +2332,8 @@ $ matrix   &lt;chr&gt; &quot;F_impacts&quot;, &quot;F_impacts&quot;, &quot;F_imp
 <h2 class="anchored" data-anchor-id="exercise-3-co2-emissions-analysis">Exercise 3: CO2 Emissions Analysis</h2>
 <p>Read CO2 emissions data from the F_satellite matrix and analyze top sectors.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read CO2 production data from F_satellite matrix</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter for CO2-related stressors in 2022</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>co2_data <span class="ot">&lt;-</span> exio <span class="sc">|&gt;</span></span>
@@ -2331,6 +2346,7 @@ $ matrix   &lt;chr&gt; &quot;F_impacts&quot;, &quot;F_impacts&quot;, &quot;F_imp
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># View the CO2 data</span></span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>co2_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 35,334 × 8
    stressor               region sector          value unit   year format matrix
@@ -2347,7 +2363,10 @@ $ matrix   &lt;chr&gt; &quot;F_impacts&quot;, &quot;F_impacts&quot;, &quot;F_imp
 10 CO2 - combustion - air AT     Poultry farmi… 5.07e7 kg     2022 ixi    F_sat…
 # ℹ 35,324 more rows</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(co2_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 35,334
 Columns: 8
@@ -2360,12 +2379,15 @@ $ year     &lt;dbl&gt; 2022, 2022, 2022, 2022, 2022, 2022, 2022, 2022, 2022, 202
 $ format   &lt;chr&gt; &quot;ixi&quot;, &quot;ixi&quot;, &quot;ixi&quot;, &quot;ixi&quot;, &quot;ixi&quot;, &quot;ixi&quot;, &quot;ixi&quot;, &quot;ixi&quot;, &quot;ixi&quot;…
 $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;…</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find unique CO2 stressors</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>unique_stressors <span class="ot">&lt;-</span> co2_data <span class="sc">|&gt;</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(stressor) <span class="sc">|&gt;</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(stressor)</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>unique_stressors</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 1
   stressor                                      
@@ -2383,6 +2405,8 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <h2 class="anchored" data-anchor-id="exercise-3-time-series-analysis-of-top-co2-emitters">Exercise 3: Time Series Analysis of Top CO2 Emitters</h2>
 <p>Now let’s create a visualization showing CO2 emissions over time for the top 5 emitting countries.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get CO2 data, identify top 5 emitters, and create time series</span></span>
@@ -2406,6 +2430,7 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
 <span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
 <span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in geom_point(linewidth = 2): Ignoring unknown parameters: `linewidth`</code></pre>
 </div>
@@ -2422,6 +2447,8 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <h2 class="anchored" data-anchor-id="exercise-4-top-countries-reducing-co2-emissions">Exercise 4: Top Countries Reducing CO2 Emissions</h2>
 <p>Let’s identify the countries that have achieved the greatest reduction in CO2 emissions from 1995 to 2022.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate emission changes and identify top 5 reducers (individual countries only)</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>exio <span class="sc">|&gt;</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(matrix <span class="sc">==</span> <span class="st">&quot;F_satellite&quot;</span>, stressor <span class="sc">%like%</span> <span class="st">&quot;%CO2%&quot;</span>) <span class="sc">|&gt;</span></span>
@@ -2458,6 +2485,7 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
 <span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>)</span>
 <span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2467,6 +2495,8 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 </div>
 </div>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find top 5 sectors in the US by CO2 emissions in 2022</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>top_co2_sectors <span class="ot">&lt;-</span> co2_data <span class="sc">|&gt;</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">&quot;US&quot;</span>) <span class="sc">|&gt;</span></span>
@@ -2476,6 +2506,7 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>)</span>
 <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>top_co2_sectors</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 2
   sector                            total_co2
@@ -2492,6 +2523,8 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <h2 class="anchored" data-anchor-id="exercise-4-time-series-of-top-co2-emitting-countries">Exercise 4: Time Series of Top CO2 Emitting Countries</h2>
 <p>Visualize CO2 emissions over time for the top 5 emitting countries.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># First, get all CO2 data across all years</span></span>
@@ -2529,6 +2562,7 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
 <span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
 <span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2542,6 +2576,8 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <h2 class="anchored" data-anchor-id="exercise-5-top-co2-emitting-industries-globally">Exercise 5: Top CO2 Emitting Industries Globally</h2>
 <p>Identify the top 5 industries/sectors that emit the most CO2 globally in 2022.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find top 5 industries globally by CO2 emissions in 2022</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>top_co2_industries <span class="ot">&lt;-</span> co2_data <span class="sc">|&gt;</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(sector) <span class="sc">|&gt;</span></span>
@@ -2550,6 +2586,7 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>)</span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>top_co2_industries</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 2
   sector                                  total_co2
@@ -2562,6 +2599,8 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 </div>
 </div>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize top 5 emitting industries</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(top_co2_industries, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(sector, total_co2), <span class="at">y =</span> total_co2)) <span class="sc">+</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>) <span class="sc">+</span></span>
@@ -2572,6 +2611,7 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Total CO2 Emissions&quot;</span></span>
 <span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2585,6 +2625,8 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <h2 class="anchored" data-anchor-id="exercise-6-types-of-pollutants">Exercise 6: types of pollutants</h2>
 <p>In the US, what are the top 5 sectors with highest emissions in 2022?</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find top 5 sectors with highest total emissions in the US in 2022</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>top_us_sectors <span class="ot">&lt;-</span> exio <span class="sc">|&gt;</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2022</span>, matrix <span class="sc">==</span> <span class="st">&quot;F_satellite&quot;</span>, region <span class="sc">==</span> <span class="st">&quot;US&quot;</span>) <span class="sc">|&gt;</span></span>
@@ -2595,6 +2637,7 @@ $ matrix   &lt;chr&gt; &quot;F_satellite&quot;, &quot;F_satellite&quot;, &quot;F
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>)</span>
 <span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>top_us_sectors</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 2
   sector                            total_emissions
