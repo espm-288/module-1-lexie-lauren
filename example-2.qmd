@@ -1,3 +1,10 @@
+```
+title: "Module 1: Tabular Data"
+subtitle: "Working with larger than RAM data using duckdbfs"
+format: html
+```
+Explaining our analysis and so forth. 
+
 ```{r}
 library(duckdbfs)
 library(dplyr)
@@ -110,27 +117,17 @@ ggplot(us_sectors_by_year, aes(x = year, y = total_co2, color = sector)) +
   theme(legend.position = "bottom")
 ```
 
-identify and plot the monetary values of co2 emissions for the top 5 emitting countries over time.
-
 ```{r}
-# Assume a monetary value per ton of CO2 (e.g., $50/ton)
-co2_value_per_ton <- 50
+top_sectors <- co2 |>
+    group_by(sector) |>
+    summarise(total_co2 = sum(value, na.rm = TRUE), .groups="drop") |>
+    arrange(desc(total_co2)) |>
+    head(5)
 
-# Calculate monetary values for top 5 regions over time
-co2_monetary_by_year <- co2_by_year |>
-  mutate(monetary_value = total_co2 * co2_value_per_ton)
+all_sectors_by_year <- co2 |>
+    inner_join(top_sectors) |>
+    group_by(sector, year) |>
+    summarise(total_co2 = sum(value, na.rm = TRUE), .groups="drop") |> 
+    collect()
 
-# Plot monetary values by year for top countries
-library(ggplot2)
-ggplot(co2_monetary_by_year, aes(x = year, y = monetary_value, color = region)) +
-  geom_line(linewidth = 1) +
-  geom_point() +
-  labs(
-    title = "Monetary Value of CO2 Emissions for Top 5 Regions",
-    x = "Year",
-    y = "Monetary Value (USD)",
-    color = "Region"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-```
+all_sectors_by_year
