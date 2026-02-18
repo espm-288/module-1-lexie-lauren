@@ -52,7 +52,22 @@ Prithee, open [tabular-data.qmd](tabular-data.qmd) within RStudio or another edi
 ## Files of Import
 
 - `tabular-data.qmd`: The principal Quarto document, wherein lie exercises and analysis
+- `tabular-data.pdf`: PDF rendering of the tabular data analysis
+- `example2.qmd`: Additional analysis document (without dash)
+- `example2.html`: HTML rendering of example2 analysis
+- `example-2.qmd`: Additional analysis document (with dash)
+- `example-2.html`: HTML rendering of example-2 analysis
+- `example-2.pdf`: PDF rendering of example-2 analysis
 - `README.md`: Documentation of this project (this very parchment thou readest)
+
+## Contributions of the Team
+
+This project was crafted through collaborative effort betwixt Lauren and Lexie, each bringing their talents to bear:
+
+- **Lauren**: Primary creator of the `example2` file series (example2.qmd, example2.html) and the `tabular-data.pdf`
+- **Lexie**: Primary creator of the `example-2` file series (example-2.qmd, example-2.html, example-2.pdf)
+
+All labor was performed collaboratively, and most files bear the marks of edits from both team members, as befits true partnership in scholarly pursuit.
 
 ## Information Regarding the Course
 
