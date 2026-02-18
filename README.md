@@ -53,10 +53,11 @@ Prithee, open [tabular-data.qmd](tabular-data.qmd) within RStudio or another edi
 
 - `tabular-data.qmd`: The principal Quarto document, wherein lie exercises and analysis
 - `tabular-data.pdf`: PDF rendering of the tabular data analysis
+- `tabular-data.html`: [HTML rendering of tabular data analysis](https://espm-288.github.io/module-1-lexie-lauren/tabular-data.html)
 - `example2.qmd`: Additional analysis document (without dash)
-- `example2.html`: HTML rendering of example2 analysis
+- `example2.html`: [HTML rendering of example2 analysis](https://espm-288.github.io/module-1-lexie-lauren/example2.html)
 - `example-2.qmd`: Additional analysis document (with dash)
-- `example-2.html`: HTML rendering of example-2 analysis
+- `example-2.html`: [HTML rendering of example-2 analysis](https://espm-288.github.io/module-1-lexie-lauren/example-2.html)
 - `example-2.pdf`: PDF rendering of example-2 analysis
 - `README.md`: Documentation of this project (this very parchment thou readest)
 
