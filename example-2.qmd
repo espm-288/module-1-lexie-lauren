@@ -60,6 +60,8 @@ knitr::kable(top_co2_regions,
 
 
 ```{r}
+#| fig-width: 8
+#| fig-height: 6
 # Get the list of top regions
 top_regions <- top_co2_regions$region
 
@@ -81,7 +83,11 @@ ggplot(co2_by_year, aes(x = year, y = total_co2, color = region)) +
     color = "Region"
   ) +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 9)
+  ) +
+  guides(color = guide_legend(nrow = 1))
 ```
 
 
@@ -102,6 +108,8 @@ knitr::kable(top_us_sectors_2022,
 ```
 
 ```{r}
+#| fig-width: 8
+#| fig-height: 6
 # Get the list of top sectors
 top_sectors <- top_us_sectors_2022$sector
 
@@ -124,7 +132,11 @@ ggplot(us_sectors_by_year, aes(x = year, y = total_co2, color = sector)) +
     color = "Sector"
   ) +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(size = 8)
+  ) +
+  guides(color = guide_legend(nrow = 2))
 ```
 
 ```{r}
@@ -141,6 +153,8 @@ knitr::kable(top_sectors,
 ```
 
 ```{r}
+#| fig-width: 8
+#| fig-height: 6
 # Create bar chart of top 5 sectors
 ggplot(top_sectors, aes(x = reorder(sector, -total_co2), y = total_co2, fill = sector)) +
   geom_col() +
@@ -151,8 +165,9 @@ ggplot(top_sectors, aes(x = reorder(sector, -total_co2), y = total_co2, fill = s
   ) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    legend.position = "none"
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 9),
+    legend.position = "none",
+    plot.margin = margin(10, 10, 20, 10)
   ) +
   scale_y_continuous(labels = scales::comma)
 ```
