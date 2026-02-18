@@ -2,13 +2,10 @@
 title: "Module 1: Tabular Data"
 subtitle: "Working with larger than RAM data using duckdbfs"
 format:
-  html:
-    embed-resources: true
-    code-fold: true
-    code-tools: true
-    df-print: kable
+  pdf:
+    number-sections: true
+    colorlinks: true
 ---
-Explaining our analysis and so forth. 
 
 ```{r}
 #| include: false
@@ -19,7 +16,7 @@ library(knitr)
 
 # Set default chunk options
 knitr::opts_chunk$set(
-  echo = TRUE,
+  echo = FALSE,
   warning = FALSE,
   message = FALSE
 )
@@ -56,10 +53,11 @@ top_co2_regions <- co2 |>
     head(5) |>
     collect()
 
-knitr::kable(top_co2_regions, format.args = list(big.mark = ","))
+knitr::kable(top_co2_regions, 
+             format.args = list(big.mark = ","),
+             caption = "Top 5 Regions by Total CO2 Emissions")
 ```
 
-Filter the co2 data down to just these top countries, and plot their total emissions by year.
 
 ```{r}
 # Get the list of top regions
@@ -86,7 +84,6 @@ ggplot(co2_by_year, aes(x = year, y = total_co2, color = region)) +
   theme(legend.position = "bottom")
 ```
 
-Identify the top 5 sectors in the US by CO2 emissions in 2022, and visualize their emissions over time.
 
 ```{r}
 # Find top 5 sectors in US for 2022
@@ -99,7 +96,9 @@ top_us_sectors_2022 <- co2 |>
   head(5) |>
   collect()
 
-knitr::kable(top_us_sectors_2022, format.args = list(big.mark = ","))
+knitr::kable(top_us_sectors_2022, 
+             format.args = list(big.mark = ","),
+             caption = "Top 5 US Sectors by CO2 Emissions in 2022")
 ```
 
 ```{r}
@@ -133,13 +132,27 @@ top_sectors <- co2 |>
     group_by(sector) |>
     summarise(total_co2 = sum(value, na.rm = TRUE), .groups="drop") |>
     arrange(desc(total_co2)) |>
-    head(5)
-
-all_sectors_by_year <- co2 |>
-    inner_join(top_sectors) |>
-    group_by(sector, year) |>
-    summarise(total_co2 = sum(value, na.rm = TRUE), .groups="drop") |> 
+    head(5) |>
     collect()
 
-knitr::kable(all_sectors_by_year, format.args = list(big.mark = ","))
+knitr::kable(top_sectors, 
+             format.args = list(big.mark = ","),
+             caption = "Top 5 Global Sectors by Total CO2 Emissions")
+```
+
+```{r}
+# Create bar chart of top 5 sectors
+ggplot(top_sectors, aes(x = reorder(sector, -total_co2), y = total_co2, fill = sector)) +
+  geom_col() +
+  labs(
+    title = "Top 5 Global Sectors by Total CO2 Emissions",
+    x = "Sector",
+    y = "Total CO2 Emissions"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "none"
+  ) +
+  scale_y_continuous(labels = scales::comma)
 ```
