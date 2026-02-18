@@ -3,6 +3,16 @@ title: "Module 1: Tabular Data"
 subtitle: "Working with larger-than-RAM data using duckdbfs"
 author: "ESPM 288"
 format:
+  pdf:
+    documentclass: article
+    fontsize: 11pt
+    geometry: margin=1in
+    colorlinks: true
+    linkcolor: blue
+    urlcolor: blue
+    toc: true
+    toc-depth: 2
+    number-sections: false
   html:
     embed-resources: true
     css: custom-style.css
@@ -10,7 +20,7 @@ format:
     df-print: paged
 ---
 
-```{css, echo=FALSE}
+```{css, echo=FALSE, eval=knitr::is_html_output()}
 body {
   background-color: #FFB6C1 !important;
   font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
